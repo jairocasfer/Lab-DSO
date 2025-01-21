@@ -1,16 +1,14 @@
 name: Lab DSO
-on: [push]
-
+on:
+  push:
+    branches:
+      - main
 jobs:
   Build-Deploy:
-    runs-on: ubuntu latest
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Compilar
-        run: "echo 'compilar'"
-    
-      - name: Probar
-        run: "echo 'probar'"
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Desplegar
-        run: "echo 'desplegar'"
+      - name: Echo step
+        run: echo "This is a test"
