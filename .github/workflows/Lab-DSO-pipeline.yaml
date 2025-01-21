@@ -1,0 +1,16 @@
+name: Lab DSO
+on: [push]
+
+jobs:
+  Build-Deploy:
+    runs-on: ubuntu latest
+
+    steps:
+      - name: Compilar
+        run: "echo 'compilar'"
+    
+      - name: Probar
+        run: "echo 'probar'"
+
+      - name: Desplegar
+        run: "echo 'desplegar'"
