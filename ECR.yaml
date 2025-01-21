@@ -1,0 +1,14 @@
+Resources:
+  MyPublicRepositry:
+    Type: AWS::ECR::PublicRepository
+    Properties:
+      RepositoryName: "public-test-owasp"
+      Tags:
+        - Key: Ambiente
+          Value: test
+        - Key: Laboratorio
+          Value: IaC
+
+Outputs:
+  uri:
+    Value: !GetAtt MyPublicRepositry.repositoryUri
