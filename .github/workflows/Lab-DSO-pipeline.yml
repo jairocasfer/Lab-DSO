@@ -7,8 +7,11 @@ jobs:
   Build-Deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Compilar
+        run: "echo 'compilar'"
 
-      - name: Echo step
-        run: echo "This is a test"
+      - name: Probar
+        run: echo "probar"
+
+      - name: desplegar
+        run: echo "desplegar"
