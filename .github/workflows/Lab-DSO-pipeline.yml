@@ -7,48 +7,43 @@ jobs:
   Build-Deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: "obtener ultima version del codigo"
+      - name: "Obtener ultima version del codigo"
         uses: actions/checkout@v3
-      
-      - name: Instalar java
+
+      - name: Instalar Java
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
-      
+
       - name: Hacer ejecutable el archivo mvnw
         run: chmod +x ./mvnw
 
-      - name: Compilacion
+      - name: Compilación
         run: ./mvnw clean install
 
-      - name: Evaluacion SCA
-        uses: dependency-check/Dependency-Check_Action@main
-        env:
-          JAVA_HOME: /opt/jdk
-        id: Depcheck
-        with:
-          project: "WebGoat"
-          path: '.'
-          format: 'HTML'
-          out: 'reports'
-          args: >
-            --disableRetireJS
-
-      - name: Comprobar reportes Dependency
-        run: ls -ltr ./reports
+      - name: Instalar Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            ca-certificates \
+            curl \
+            gnupg \
+            lsb-release
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          echo \
+            "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+            $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+          sudo systemctl start docker
+          docker --version
 
       - name: Running Horusec Security
         run: |
           curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest
-          horusec start -p="./" -e="true"    
+          horusec start -p="./" --output-format="json" --json-output-file="horusec-output.json"
 
-      #- name: Instalar Horusec CLI
-      #  run: |
-      #    curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest
-      #    export PATH=$PATH:/usr/local/bin
-
-      #- name: Ejecutar Horusec
-      #  run: horusec start -p ./ -D
-
-      
+      - name: Verificar reporte Horusec
+        run: cat horusec-output.json
