@@ -38,12 +38,17 @@ jobs:
       - name: Comprobar reportes Dependency
         run: ls -ltr ./reports
 
-      - name: Instalar Horusec CLI
+      - name: Running Horusec Security
         run: |
           curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest
-          export PATH=$PATH:/usr/local/bin
+          horusec start -p="./" -e="true"    
 
-      - name: Ejecutar Horusec
-        run: horusec start -p ./ 
+      #- name: Instalar Horusec CLI
+      #  run: |
+      #    curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest
+      #    export PATH=$PATH:/usr/local/bin
+
+      #- name: Ejecutar Horusec
+      #  run: horusec start -p ./ -D
 
       
