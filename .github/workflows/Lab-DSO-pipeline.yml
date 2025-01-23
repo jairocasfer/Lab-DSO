@@ -44,6 +44,6 @@ jobs:
           export PATH=$PATH:/usr/local/bin
 
       - name: Ejecutar Horusec
-        run: horusec start -p ./ -D
+        run: horusec start -p ./ 
 
       
