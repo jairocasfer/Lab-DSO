@@ -22,4 +22,20 @@ jobs:
       - name: Compilacion
         run: ./mvnw clean install
 
+      - name: Evaluacion SCA
+        uses: dependency-check/Dependency-Check_Action@main
+        env:
+          JAVA_HOME: /opt/jdk
+        id: Depcheck
+        with:
+          project: "WebGoat"
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+          args: >
+            --disableRetireJS
+
+      - name: Comprobar reportes Dependency
+        run: ls -ltr ./reports
+
       
