@@ -16,6 +16,9 @@ jobs:
           distribution: "temurin"
           java-version: "17"
       
+      - name: Hacer ejecutable el archivo mvnw
+        run: chmod +x ./mvnw
+
       - name: Compilacion
         run: ./mvnw clean install
 
