@@ -35,20 +35,22 @@ jobs:
           args: >
             --disableRetireJS
 
-      # - name: Comprobar reportes Dependency
-      #   run: ls -ltr ./reports
 
       - name: Running Horusec Security
         run: |
           curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest-beta
-          horusec start -p="./" -e="true"    
+          horusec start -p="./"    
 
-      # - name: Instalar Horusec CLI
-      #   run: |
-      #     curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest
-      #     export PATH=$PATH:/usr/local/bin
+      # Ambiente de prueba con docker, crear la imagen del ambiente y ejecutar el contenedor apartir del dockerfile 
+      # ejecutando el ls desde CMD
 
-      # - name: Ejecutar Horusec
-      #   run: horusec start -p ./ -D
+      - name: Ambiente de prueba con docker
+        run: docker build -t scidevsecops/my-app:latest .
+
+      - name: Ejecutando ls
+        run: ls
+
+
+      
 
       
