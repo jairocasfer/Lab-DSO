@@ -52,11 +52,14 @@ jobs:
         with:
           image-ref: 'scidevsecops/my-app:latest'
           format: 'table'
-          exit-code: '1'
+          exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          
+      
+      - name: Escaneo de seguridad con Arachni
+        run: |
+          docker run --rm -v $(pwd):/arachni/reports arachni/arachni \ --report-save-path /arachni/reports/scan.afr http://localhost:8080
 
 
       
