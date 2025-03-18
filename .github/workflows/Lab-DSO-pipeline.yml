@@ -47,8 +47,16 @@ jobs:
       - name: Ambiente de prueba con docker
         run: docker build -t scidevsecops/my-app:latest .
 
-      - name: Ejecutando ls
-        run: ls
+      - name: Evaluando con Aqua trivy
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'scidevsecops/my-app:latest'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          
 
 
       
