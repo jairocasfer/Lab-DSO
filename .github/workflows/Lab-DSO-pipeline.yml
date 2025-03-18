@@ -59,7 +59,8 @@ jobs:
       
       - name: Escaneo de seguridad con Arachni
         run: |
-          docker run --rm -v $(pwd):/arachni/reports arachni/arachni \ --report-save-path /arachni/reports/scan.afr http://localhost:8080
+          docker run --rm -v $(pwd):/arachni/reports arachni/arachni arachni http://localhost:8080 \
+          --report-save-path /arachni/reports/scan.afr
 
 
       
