@@ -57,10 +57,20 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
       
-      - name: Escaneo de seguridad con Arachni
+      - name: Instalar dependencias para Arachni
         run: |
-          docker run --rm -v $(pwd):/arachni/reports arachni/arachni arachni http://localhost:8080 \
-          --report-save-path /arachni/reports/scan.afr
+          sudo apt update
+          sudo apt install -y libcurl4-openssl-dev ruby ruby-dev build-essential zlib1g-dev libsqlite3-dev git
+          git clone https://github.com/Arachni/arachni.git
+          cd arachni
+          gem install bundler
+          bundle install --without development test
+      
+      - name: Escaneo con Arachni
+        run: |
+          cd arachni/bin
+          ./arachni http://localhost:8080 --output-verbose --scope-include-subdomains --report-save-path=scan.afr
+        
 
 
       
