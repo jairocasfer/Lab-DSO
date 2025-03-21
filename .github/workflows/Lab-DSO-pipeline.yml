@@ -70,9 +70,8 @@ jobs:
           sudo gem install bundler
           bundle config set path 'vendor/bundle'
           bundle add webrick
+          bundle add ox
           bundle install --without development test
-        
-          
       
       - name: Escaneo con Arachni
         run: |
