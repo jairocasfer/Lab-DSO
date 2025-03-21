@@ -63,8 +63,8 @@ jobs:
           sudo apt install -y libcurl4-openssl-dev ruby ruby-dev build-essential zlib1g-dev libsqlite3-dev git
           git clone https://github.com/Arachni/arachni.git
           cd arachni
-          gem install bundler
-          bundle install --without development test
+          sudo gem install bundler
+          sudo bundle install --without development test
       
       - name: Escaneo con Arachni
         run: |
