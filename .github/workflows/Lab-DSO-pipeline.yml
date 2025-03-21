@@ -65,7 +65,14 @@ jobs:
           cd arachni
           sudo gem install bundler
           sudo bundle install --without development test
-          sudo gem install webrick
+      
+      - name: Instalar Webrick y verificar Ruby
+        run: |
+          ruby -v
+          gem env
+          gem install webrick
+          gem list webrick
+          
       
       - name: Escaneo con Arachni
         run: |
