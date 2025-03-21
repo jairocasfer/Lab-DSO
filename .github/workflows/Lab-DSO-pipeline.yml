@@ -65,6 +65,7 @@ jobs:
           cd arachni
           sudo gem install bundler
           sudo bundle install --without development test
+          sudo gem install webrick
       
       - name: Escaneo con Arachni
         run: |
