@@ -67,7 +67,7 @@ jobs:
       - name: Instalar dependencias de Ruby para Arachni
         run: |
           cd arachni
-          gem install bundler
+          sudo gem install bundler
           bundle config set path 'vendor/bundle'
           bundle add webrick
           bundle install --without development test
