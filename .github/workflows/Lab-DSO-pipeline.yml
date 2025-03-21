@@ -62,16 +62,16 @@ jobs:
           sudo apt update
           sudo apt install -y libcurl4-openssl-dev ruby ruby-dev build-essential zlib1g-dev libsqlite3-dev git
           git clone https://github.com/Arachni/arachni.git
-          cd arachni
-          sudo gem install bundler
-          sudo bundle install --without development test
+          
       
-      - name: Instalar Webrick y verificar Ruby
+      - name: Instalar dependencias de Ruby para Arachni
         run: |
-          ruby -v
-          gem env
-          gem install webrick
-          gem list webrick
+          cd arachni
+          gem install bundler
+          bundle config set path 'vendor/bundle'
+          bundle add webrick
+          bundle install --without development test
+        
           
       
       - name: Escaneo con Arachni
