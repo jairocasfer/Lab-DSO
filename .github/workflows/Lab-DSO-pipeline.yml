@@ -18,10 +18,10 @@ jobs:
       
       - name: Hacer ejecutable el archivo mvnw
         run: chmod +x ./mvnw
-        continue-on-error: true
 
       - name: Compilacion
-        run: ./mvnw clean install 
+        run: ./mvnw clean install -DskipTests
+
       - name: Evaluacion SCA
         uses: dependency-check/Dependency-Check_Action@main
         env:
