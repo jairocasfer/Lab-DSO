@@ -20,8 +20,7 @@ jobs:
         run: chmod +x ./mvnw
 
       - name: Compilacion
-        run: ./mvnw clean install -DskipTests
-
+        run: ./mvnw clean install 
       - name: Evaluacion SCA
         uses: dependency-check/Dependency-Check_Action@main
         env:
@@ -68,7 +67,7 @@ jobs:
       - name: Escaneo con Arachni
         run: |
           cd arachni-*/bin
-          ./arachni http://localhost:8080 --output-verbose --scope-include-subdomains --report-save-path=scan.afr
+          ./arachni http://host.docker.internal:8080 --output-verbose --scope-include-subdomains --report-save-path=scan.afr
         
 
 
