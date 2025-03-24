@@ -64,7 +64,7 @@ jobs:
 
       - name: "Ejecutar contenedor"
         run: |
-          docker run -d -p 8080:8080 -p 9090 --name webgoat-container webgoat:latest
+          docker run -d -p 8080:8080 -p 9090 --name webgoat-container scidevsecops/my-app:latest
 
       - name: Escaneo con Arachni
         run: |
