@@ -77,7 +77,7 @@ jobs:
       - name: Escaneo con Arachni
         run: |
           cd arachni-*/bin
-          ./arachni http://${{env.CONTAINER_IP}}:8080 \
+          ./arachni http://${{env.CONTAINER_IP}}:8080/WebGoat \
           --output-verbose \
           --scope-include-subdomains \
           --report-save-path=scan.afr
