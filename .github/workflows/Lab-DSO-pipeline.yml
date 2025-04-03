@@ -16,9 +16,11 @@ jobs:
           distribution: "temurin"
           java-version: "17"
       
-      - name: Hacer ejecutable el archivo mvnw y crea la carpeta de Reportes
+      - name: Hacer ejecutable el archivo mvnw
         run: chmod +x ./mvnw
-          mkdir 'reports'
+          
+      - name: Crear carpeta de los reportes
+        run: mkdir 'reports'
 
       - name: Compilacion
         run: ./mvnw clean install -DskipTests
