@@ -16,8 +16,9 @@ jobs:
           distribution: "temurin"
           java-version: "17"
       
-      - name: Hacer ejecutable el archivo mvnw
+      - name: Hacer ejecutable el archivo mvnw y crea la carpeta de Reportes
         run: chmod +x ./mvnw
+          mkdir 'reports'
 
       - name: Compilacion
         run: ./mvnw clean install -DskipTests
@@ -39,7 +40,7 @@ jobs:
       - name: Running Horusec Security
         run: |
           curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest-beta
-          horusec start -p="./"    
+          horusec start -p="./" -o="json" -O="reports/horusec-report.json"
 
       - name: Ambiente de prueba con docker
         run: docker build -t scidevsecops/my-app:latest .
@@ -49,6 +50,7 @@ jobs:
         with:
           image-ref: 'scidevsecops/my-app:latest'
           format: 'table'
+          output: 'reports/trivy-report.txt'
           exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
@@ -80,7 +82,23 @@ jobs:
           ./arachni http://${{env.CONTAINER_IP}}:8080/WebGoat \
           --output-verbose \
           --scope-include-subdomains \
-          --report-save-path=scan.afr
+          --report-save-path=../../reports/scan.afr
+
+      - name: Generar reporte HTML con Arachni Reporter
+        run: |
+          cd arachni-*/bin
+          ./arachni_reporter ../../reports/scan.afr --reporter=html:outfile=../../reports/scan.html
+
+      - name: Comprimiendo la carpeta de los Reportes
+        run: zip -r reports.zip reports
+
+      - name: Reportes de Herramientas
+        uses: actions/upload-artifact@v4
+        with: 
+          name: Reportes
+          retention-days: 1
+          path: reports.zip
+            
         
 
 
