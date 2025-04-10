@@ -9,6 +9,12 @@ jobs:
     steps:
       - name: "obtener ultima version del codigo"
         uses: actions/checkout@v3
+
+      - name: Configurar credenciales AWS
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::976954139503:role/capacitacion-jairo-2025
+          aws-region: us-east-1
       
       - name: Instalar java
         uses: actions/setup-java@v4
@@ -19,7 +25,7 @@ jobs:
       - name: Hacer ejecutable el archivo mvnw
         run: chmod +x ./mvnw
           
-      - name: Crear carpeta de los reportes
+      - name: Crea carpeta de los reportes
         run: mkdir 'reports'
 
       - name: Compilacion
@@ -69,19 +75,12 @@ jobs:
       - name: "Ejecutar contenedor"
         run: |
           docker run -d -p 8080:8080 -p 9090:9090 --name webgoat-container scidevsecops/my-app:latest
-
-      - name: "Obtener IP del contenedor"
-        id: container_ip
-        run: |
-          IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' webgoat-container)
-          echo "IP del contenedor: $IP"
-          echo "CONTAINER_IP=$IP" >> $GITHUB_ENV
           sleep 20
 
       - name: Escaneo con Arachni
         run: |
           cd arachni-*/bin
-          ./arachni http://${{env.CONTAINER_IP}}:8080/WebGoat \
+          ./arachni http://172.17.0.2:8080/WebGoat \
           --output-verbose \
           --scope-include-subdomains \
           --report-save-path=../../reports/scan.afr
@@ -90,6 +89,13 @@ jobs:
         run: |
           cd arachni-*/bin
           ./arachni_reporter ../../reports/scan.afr --reporter=html:outfile=../../reports/scan.html
+      
+      - name: Detener contenedor de aplicacion
+        run: docker stop webgoat-container
+
+      - name: Comprobar AWS ecs
+        run: |
+          aws ecs ls
 
       - name: Comprimiendo la carpeta de los Reportes
         run: zip -r reports.zip reports
