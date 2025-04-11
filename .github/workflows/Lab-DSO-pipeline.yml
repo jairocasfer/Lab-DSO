@@ -109,37 +109,34 @@ jobs:
           retention-days: 1
           path: reports.zip
 
-      - name: Setup Terraform
+      - name: Preparar Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.10.5"  
      
-      - name: Create ECR Repository First
+      - name: Crea el repositorio ECR
         working-directory: ./terraform
         run: |
           terraform init
           terraform apply -target=aws_ecr_repository.webgoat_repo -auto-approve
 
-      # Paso 2: Login a ECR y pushear la imagen Docker
-      - name: Login to Amazon ECR
+      - name: Login a Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and Push Docker Image
+      - name: Construir y Pushear la imagen de docker
         run: |
           docker build -t ${{ steps.login-ecr.outputs.registry }}/webgoat-repo:latest .
           docker push ${{ steps.login-ecr.outputs.registry }}/webgoat-repo:latest
 
-      # Paso 3: Desplegar el resto de la infraestructura (EC2, Security Groups, etc.)
       - name: Deploy Full Infrastructure
         working-directory: ./terraform
         run: terraform apply -auto-approve
 
-      # Esperar 2 minutos y destruir todo (opcional)
-      - name: Wait 2 minutes before destruction
+      - name: Esperar 2 minutos
         run: sleep 120
 
-      - name: Terraform Destroy
+      - name: Terraform 
         working-directory: ./terraform
         run: terraform destroy -auto-approve
         if: always()

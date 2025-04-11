@@ -9,9 +9,6 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
-  assume_role {
-    role_arn = "arn:aws:iam::976954139503:role/capacitacion-jairo-2025"
-  }
 }
 
 resource "aws_ecr_repository" "webgoat_repo" {
