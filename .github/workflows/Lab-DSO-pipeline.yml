@@ -99,9 +99,10 @@ jobs:
       - name: Detener contenedor de aplicacion
         run: docker stop webgoat-container
 
-      - name: Comprobar AWS ecs
+      - name: Login a Amazon ECR
         run: |
-          aws ecs ls
+          aws ecr get-login-password | docker login --username AWS --password-stdin 976954139503.dkr.ecr.us-east-1.amazonaws.com
+      
 
       - name: Comprimiendo la carpeta de los Reportes
         run: zip -r reports.zip reports
@@ -112,8 +113,43 @@ jobs:
           name: Reportes
           retention-days: 1
           path: reports.zip
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/webgoat-repo:latest .
+
+      - name: Push Docker Image to ECR
+        run: |
+          docker push ${{ steps.login-ecr.outputs.registry }}/webgoat-repo:latest
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init & Apply
+        working-directory: ./terraform
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
+      - name: Obtiene WebGoat URLs
+        run: |
+          echo "WebGoat URL: $(terraform output -raw webgoat_url)"
+          echo "WebWolf URL: $(terraform output -raw webwolf_url)"
             
-        
+      - name: Espera de dos minutos
+        run: |
+          echo "Esperando 2 minutos antes de destruir la infraestructura..."
+          sleep 120  # 120 segundos = 2 minutos
+  
+      - name: Destruyendo recursos
+        working-directory: ./terraform
+        run: |
+          terraform destroy -auto-approve
+        if: always() 
 
 
       
