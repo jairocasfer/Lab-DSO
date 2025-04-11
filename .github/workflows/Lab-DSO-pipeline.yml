@@ -99,11 +99,6 @@ jobs:
       - name: Detener contenedor de aplicacion
         run: docker stop webgoat-container
 
-      - name: Login a Amazon ECR
-        run: |
-          aws ecr get-login-password | docker login --username AWS --password-stdin 976954139503.dkr.ecr.us-east-1.amazonaws.com
-      
-
       - name: Comprimiendo la carpeta de los Reportes
         run: zip -r reports.zip reports
 
@@ -114,44 +109,32 @@ jobs:
           retention-days: 1
           path: reports.zip
 
+      - name: Create ECR Repository First
+        working-directory: ./terraform
+        run: |
+          terraform init
+          terraform apply -target=aws_ecr_repository.webgoat_repo -auto-approve
+
+      # Paso 2: Login a ECR y pushear la imagen Docker
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build Docker Image
+      - name: Build and Push Docker Image
         run: |
           docker build -t ${{ steps.login-ecr.outputs.registry }}/webgoat-repo:latest .
-
-      - name: Push Docker Image to ECR
-        run: |
           docker push ${{ steps.login-ecr.outputs.registry }}/webgoat-repo:latest
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Init & Apply
+      # Paso 3: Desplegar el resto de la infraestructura (EC2, Security Groups, etc.)
+      - name: Deploy Full Infrastructure
         working-directory: ./terraform
-        run: |
-          terraform init
-          terraform apply -auto-approve
+        run: terraform apply -auto-approve
 
-      - name: Obtiene WebGoat URLs
-        run: |
-          echo "WebGoat URL: $(terraform output -raw webgoat_url)"
-          echo "WebWolf URL: $(terraform output -raw webwolf_url)"
-            
-      - name: Espera de dos minutos
-        run: |
-          echo "Esperando 2 minutos antes de destruir la infraestructura..."
-          sleep 120  # 120 segundos = 2 minutos
-  
-      - name: Destruyendo recursos
+      # Esperar 2 minutos y destruir todo (opcional)
+      - name: Wait 2 minutes before destruction
+        run: sleep 120
+
+      - name: Terraform Destroy
         working-directory: ./terraform
-        run: |
-          terraform destroy -auto-approve
-        if: always() 
-
-
-      
-
-      
+        run: terraform destroy -auto-approve
+        if: always()
