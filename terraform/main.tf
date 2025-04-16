@@ -11,3 +11,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
+data "aws_ecr_repository" "webgoat_repo" {
+  name = "webgoat-repo"
+}

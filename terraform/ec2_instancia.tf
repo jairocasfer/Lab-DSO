@@ -14,11 +14,6 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] 
 }
 
-data "aws_ecr_repository" "webgoat_repo" {
-  name = "webgoat-repo"
-}
-
-
 resource "aws_instance" "webgoat_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
