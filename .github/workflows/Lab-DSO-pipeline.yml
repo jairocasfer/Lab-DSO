@@ -118,7 +118,7 @@ jobs:
         working-directory: ./terraform
         run: |
           terraform init
-          terraform apply -target=aws_ecr_repository.webgoat_repo -auto-approve
+          terraform apply -auto-approve
 
       - name: Login a Amazon ECR
         id: login-ecr
