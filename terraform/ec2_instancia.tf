@@ -22,9 +22,10 @@ resource "aws_instance" "webgoat_server" {
                   sudo apt-get update -y
                   sudo apt-get install docker.io -y
                   sudo systemctl enable docker
-                  aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${aws_ecr_repository.webgoat_repo.repository_url}
-                  sudo docker pull ${aws_ecr_repository.webgoat_repo.repository_url}:latest
-                  sudo docker run -d -p 8080:8080 -p 9090:9090 ${aws_ecr_repository.webgoat_repo.repository_url}:latest
+                  aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${data.aws_ecr_repository.webgoat_repo.repository_url}
+                  sudo docker pull ${data.aws_ecr_repository.webgoat_repo.repository_url}:latest
+                  sudo docker run -d -p 8080:8080 -p 9090:9090 ${data.aws_ecr_repository.webgoat_repo.repository_url}:latest
+
                   EOF
   vpc_security_group_ids = [aws_security_group.webgoat_sg.id]
   tags = {
