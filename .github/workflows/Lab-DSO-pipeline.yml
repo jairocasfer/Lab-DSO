@@ -134,7 +134,7 @@ jobs:
         run: terraform apply -auto-approve
 
       - name: Esperar 2 minutos
-        run: sleep 120
+        run: sleep 60
 
       - name: Terraform 
         working-directory: ./terraform
