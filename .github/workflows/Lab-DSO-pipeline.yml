@@ -118,6 +118,7 @@ jobs:
         working-directory: ./terraform
         run: |
           terraform init
+          terraform import aws_security_group.webgoat_sg sg-0a72c005b12124bc6 || true
           terraform apply -auto-approve
 
       - name: Login a Amazon ECR

@@ -36,7 +36,7 @@ resource "aws_instance" "webgoat_server" {
 # Grupo de Seguridad
 resource "aws_security_group" "webgoat_sg" {
   name        = "webgoat-security-group"
-  description = "Allow HTTP HTTPS WebGoat 8080 and WebWolf 9090 traffic"
+  description = "Permite HTTP HTTPS WebGoat 8080 y trafico WebWolf en el puerto 9090"
 
   ingress {
     from_port   = 80
