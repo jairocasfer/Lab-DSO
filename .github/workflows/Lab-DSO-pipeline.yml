@@ -109,35 +109,4 @@ jobs:
           retention-days: 1
           path: reports.zip
 
-      - name: Preparar Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.10.5"  
-     
-      - name: Crea el repositorio ECR
-        working-directory: ./terraform
-        run: |
-          terraform init
-          terraform import aws_security_group.webgoat_sg sg-0a72c005b12124bc6 || true
-          terraform apply -auto-approve
-
-      - name: Login a Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Construir y Pushear la imagen de docker
-        run: |
-          docker build -t ${{ steps.login-ecr.outputs.registry }}/webgoat-repo:latest .
-          docker push ${{ steps.login-ecr.outputs.registry }}/webgoat-repo:latest
-
-      - name: Deploy Full Infrastructure
-        working-directory: ./terraform
-        run: terraform apply -auto-approve
-
-      - name: Esperar 2 minutos
-        run: sleep 61
-
-      - name: Terraform 
-        working-directory: ./terraform
-        run: terraform destroy -auto-approve
-        if: always()
+      
