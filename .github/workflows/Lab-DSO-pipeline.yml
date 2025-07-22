@@ -108,5 +108,26 @@ jobs:
           name: Reportes
           retention-days: 1
           path: reports.zip
-
       
+      - name: Credencial AWS
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::976954139503:role/capacitacion-jairo-2025
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t webgoat .
+
+      - name: Tag image
+        run: |
+          aws_account_id=$(aws sts get-caller-identity --query Account --output text)
+          docker tag webgoat:latest $aws_account_id.dkr.ecr.us-east-1.amazonaws.com/webgoat:latest
+
+      - name: Push to ECR
+        run: |
+          aws_account_id=$(aws sts get-caller-identity --query Account --output text)
+          docker push $aws_account_id.dkr.ecr.us-east-1.amazonaws.com/webgoat:latest
