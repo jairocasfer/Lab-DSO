@@ -131,3 +131,14 @@ jobs:
         run: |
           aws_account_id=$(aws sts get-caller-identity --query Account --output text)
           docker push $aws_account_id.dkr.ecr.us-east-1.amazonaws.com/webgoat-repo:latest
+
+      - name: Instalar terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "3.1.2"
+
+      - name: Iniciar terraform
+        run: terraform init
+
+      - name: Aplicar terraform
+        run: terraform apply -auto-approve
