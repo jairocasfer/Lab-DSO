@@ -49,6 +49,7 @@ jobs:
           out: 'reports'
           args: >
             --disableRetireJS
+            --disableCentral
 
 
       - name: Running Horusec Security
