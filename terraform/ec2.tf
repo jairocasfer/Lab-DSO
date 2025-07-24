@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 resource "aws_instance" "webgoat_ec2" {
   ami = "ami-0cbbe2c6a1bb2ad63"
   instance_type = "t3.nano"
-  security_groups = [ aws_security_group.webgoat_sg ]
+  security_groups = [ aws_security_group.webgoat_sg.name ]
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   user_data = <<-EOF
               #!/bin/bash
