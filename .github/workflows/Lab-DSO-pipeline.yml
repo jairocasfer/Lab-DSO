@@ -17,7 +17,7 @@ jobs:
     steps:
       # ========== NOTIFICACIÓN DE INICIO ==========
       - name: Notificar inicio del workflow
-        uses: aliencube/microsoft-teams-actions@v0.9.0
+        uses: aliencube/microsoft-teams-actions@v0.8.0
         with:
           webhook_uri: ${{ secrets.TEAMS_WEBHOOK_URL }}
           title: "🟡 Workflow Iniciado - Lab DSO"
@@ -379,7 +379,7 @@ jobs:
       # ========== NOTIFICACIÓN FINAL ==========
       - name: Notificar resultado final del workflow
         if: always()
-        uses: aliencube/microsoft-teams-actions@v0.9.0
+        uses: aliencube/microsoft-teams-actions@v0.8.0
         with:
           webhook_uri: ${{ secrets.TEAMS_WEBHOOK_URL }}
           title: "${{ job.status == 'success' && '✅ Workflow Lab DSO Completado' || '❌ Workflow Lab DSO Fallido' }}"
