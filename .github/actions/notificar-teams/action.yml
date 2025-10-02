@@ -23,52 +23,52 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Ejecutar notificación
-      shell: bash
+    - shell: bash
       run: |
-        PAYLOAD=$(cat <<EOF
+        PAYLOAD=$(cat <<'EOF'
+{
+  "attachments": [
+    {
+      "contentType": "application/vnd.microsoft.card.adaptive",
+      "content": {
+        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+        "type": "AdaptiveCard",
+        "version": "1.4",
+        "body": [
           {
-            "attachments": [
-              {
-                "contentType": "application/vnd.microsoft.card.adaptive",
-                "content": {
-                  "\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                  "type": "AdaptiveCard",
-                  "version": "1.4",
-                  "body": [
-                    {
-                      "type": "TextBlock",
-                      "text": "${{ inputs.title }}",
-                      "weight": "Bolder",
-                      "size": "Large",
-                      "color": "${{ inputs.color }}"
-                    },
-                    {
-                      "type": "TextBlock",
-                      "text": "${{ inputs.message }}",
-                      "wrap": true
-                    },
-                    {
-                      "type": "FactSet",
-                      "facts": [
-                        {"title": "Estado final:", "value": "${{ inputs.state }}"},
-                        {"title": "Repositorio:", "value": "${{ github.repository }}"},
-                        {"title": "Rama:", "value": "${{ github.ref_name }}"}
-                      ]
-                    }
-                  ],
-                  "actions": [
-                    {
-                      "type": "Action.OpenUrl",
-                      "title": "${{ inputs.action_title }}",
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
-                  ]
-                }
-              }
+            "type": "TextBlock",
+            "text": "${{ inputs.title }}",
+            "weight": "Bolder",
+            "size": "Large",
+            "color": "${{ inputs.color }}"
+          },
+          {
+            "type": "TextBlock",
+            "text": "${{ inputs.message }}",
+            "wrap": true
+          },
+          {
+            "type": "FactSet",
+            "facts": [
+              {"title": "Estado final:", "value": "${{ inputs.state }}"},
+              {"title": "Repositorio:", "value": "${{ github.repository }}"},
+              {"title": "Rama:", "value": "${{ github.ref_name }}"}
             ]
           }
-          EOF
-          )
-        
-        curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "${{ inputs.webhook_url }}"
+        ],
+        "actions": [
+          {
+            "type": "Action.OpenUrl",
+            "title": "${{ inputs.action_title }}",
+            "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
+        ]
+      }
+    }
+  ]
+}
+EOF
+)
+        curl -X POST -H "Content-Type: application/json" \
+          -d "$PAYLOAD" \
+          "${{ inputs.webhook_url }}"
