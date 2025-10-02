@@ -157,7 +157,7 @@ jobs:
 
 
       - name: Notificar éxito
-        if: success()
+        if: always()
         uses: ./.github/workflows/notificacion_teams.yml
         with:
           title: "🎉 ¡Workflow ${{ github.workflow }} Completado!"
