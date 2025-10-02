@@ -155,7 +155,6 @@ jobs:
         id: fecha
         run: echo "date=$(date)" >> $GITHUB_OUTPUT
 
-
       - name: Notificar éxito
         if: success()
         uses: ./.github/actions/notificar-teams

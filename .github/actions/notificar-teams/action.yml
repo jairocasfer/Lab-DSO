@@ -1,19 +1,25 @@
 name: "Notificar a Teams"
-description: "Envía notificaciones a Microsoft Teams con AdaptiveCards"
+description: "Envía notificaciones a un canal Microsoft Teams"
 
 inputs:
   title:
+    description: "Título del mensaje"
     required: true
   message:
+    description: "Mensaje que se va a mostrar"
     required: true
   state:
+    description: "Estado final (SUCCESS/FAILED)"
     required: true
   color:
+    description: "Color del estado (Good/Attention)"
     required: false
     default: "Default"
   action_title:
+    description: "Texto del botón de acción"
     required: true
   webhook_url:
+    description: "URL del cananl de Teams"
     required: true
 
 runs:
@@ -21,7 +27,7 @@ runs:
   steps:
     - shell: bash
       run: |
-        # Variables de entorno a sustituir en el template
+        
         export TITLE="${{ inputs.title }}"
         export MESSAGE="${{ inputs.message }}"
         export STATE="${{ inputs.state }}"
@@ -32,10 +38,8 @@ runs:
         export SERVER_URL="${{ github.server_url }}"
         export RUN_ID="${{ github.run_id }}"
 
-        # Crear payload final desde la plantilla
         envsubst < .github/templates/payload.json > payload_final.json
 
-        # Enviar a Teams
         curl -X POST -H "Content-Type: application/json" \
           -d @payload_final.json \
           "${{ inputs.webhook_url }}"
