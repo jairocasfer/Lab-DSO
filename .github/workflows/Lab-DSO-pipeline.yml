@@ -164,6 +164,7 @@ jobs:
           message: "Repositorio: ${{ github.repository }} - Iniciado por:${{ github.actor }} fue completado en la hora: ${{steps.fecha.outputs.date}}"
           state: "SUCCESS"
           action_title: "Ver detalles completos"
+          webhook_url: ${{ secrets.TEAMS_WEBHOOK_URL }}
 
       - name: Notificar fallo
         if: failure()
@@ -174,6 +175,7 @@ jobs:
           state: "FAILED"
           color: "Attention"
           action_title: "Diagnosticar Errores"
+          webhook_url: ${{ secrets.TEAMS_WEBHOOK_URL }}
 
       - name: Notificar cancelación
         if: cancelled()
@@ -184,3 +186,4 @@ jobs:
           state: "CANCELLED"
           color: "Warning"
           action_title: "Revisar"
+          webhook_url: ${{ secrets.TEAMS_WEBHOOK_URL }}

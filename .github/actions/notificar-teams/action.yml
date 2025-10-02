@@ -66,6 +66,5 @@ runs:
           }
           EOF
           )
-        curl -X POST -H "Content-Type: application/json" \
-          -d "$PAYLOAD" \
-          "${{ secrets.TEAMS_WEBHOOK_URL }}"
+        
+        curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "${{ inputs.webhook_url }}"
