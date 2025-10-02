@@ -174,3 +174,13 @@ jobs:
           state: "FAILED"
           color: "Attention"
           action_title: "Diagnosticar Errores"
+
+      - name: Notificar cancelación
+        if: cancelled()
+        uses: ./.github/actions/notificar-teams
+        with:
+          title: "⏹ Workflow Cancelado"
+          message: "El workflow fue cancelado manualmente"
+          state: "CANCELLED"
+          color: "Warning"
+          action_title: "Revisar"
