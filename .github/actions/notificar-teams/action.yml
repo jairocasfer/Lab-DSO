@@ -26,50 +26,21 @@ runs:
   steps:
     - shell: bash
       run: |
-        PAYLOAD=$(cat <<'EOF'
-{
-  "attachments": [
-    {
-      "contentType": "application/vnd.microsoft.card.adaptive",
-      "content": {
-        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-        "type": "AdaptiveCard",
-        "version": "1.4",
-        "body": [
-          {
-            "type": "TextBlock",
-            "text": "${{ inputs.title }}",
-            "weight": "Bolder",
-            "size": "Large",
-            "color": "${{ inputs.color }}"
-          },
-          {
-            "type": "TextBlock",
-            "text": "${{ inputs.message }}",
-            "wrap": true
-          },
-          {
-            "type": "FactSet",
-            "facts": [
-              {"title": "Estado final:", "value": "${{ inputs.state }}"},
-              {"title": "Repositorio:", "value": "${{ github.repository }}"},
-              {"title": "Rama:", "value": "${{ github.ref_name }}"}
-            ]
-          }
-        ],
-        "actions": [
-          {
-            "type": "Action.OpenUrl",
-            "title": "${{ inputs.action_title }}",
-            "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          }
-        ]
-      }
-    }
-  ]
-}
-EOF
-)
+        # Copiar la plantilla
+        cp .github/templates/payload.json payload.json
+
+        # Reemplazar los placeholders con sed
+        sed -i "s|\${{ inputs.title }}|${{ inputs.title }}|g" payload.json
+        sed -i "s|\${{ inputs.message }}|${{ inputs.message }}|g" payload.json
+        sed -i "s|\${{ inputs.state }}|${{ inputs.state }}|g" payload.json
+        sed -i "s|\${{ inputs.color }}|${{ inputs.color }}|g" payload.json
+        sed -i "s|\${{ inputs.action_title }}|${{ inputs.action_title }}|g" payload.json
+        sed -i "s|\${{ github.repository }}|${{ github.repository }}|g" payload.json
+        sed -i "s|\${{ github.ref_name }}|${{ github.ref_name }}|g" payload.json
+        sed -i "s|\${{ github.server_url }}|${{ github.server_url }}|g" payload.json
+        sed -i "s|\${{ github.run_id }}|${{ github.run_id }}|g" payload.json
+
+        # Enviar a Teams
         curl -X POST -H "Content-Type: application/json" \
-          -d "$PAYLOAD" \
+          -d @payload.json \
           "${{ inputs.webhook_url }}"
