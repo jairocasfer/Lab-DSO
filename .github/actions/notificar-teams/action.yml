@@ -1,25 +1,26 @@
 name: "Notificar a Teams"
 description: "Envía notificaciones a Microsoft Teams con AdaptiveCards"
+
 inputs:
   title:
-    description: "Título del mensaje XD"
+    description: "Título del mensaje"
     required: true
   message:
     description: "Mensaje a mostrar"
     required: true
   state:
-    description: "Estado final (SUCCESS/FAILED)"
+    description: "Estado final (SUCCESS/FAILED/CANCELLED)"
     required: true
   color:
-    description: "Color de estado (Good/Attention)"
+    description: "Color de estado (Good/Attention/Warning)"
     required: true
   action_title:
     description: "Texto del botón de acción"
     required: true
-  webhook_url: 
+  webhook_url:
     description: "URL del Canal de Teams"
     required: true
-  
+
 runs:
   using: "composite"
   steps:
