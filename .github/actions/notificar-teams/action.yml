@@ -2,7 +2,7 @@ name: "Notificar a Teams"
 description: "Envía notificaciones a Microsoft Teams con AdaptiveCards"
 inputs:
   title:
-    description: "Título del mensaje"
+    description: "Título del mensaje XD"
     required: true
   message:
     description: "Mensaje a mostrar"
