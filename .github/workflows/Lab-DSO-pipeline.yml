@@ -167,7 +167,7 @@ jobs:
 
       - name: Notificar fallo
         if: failure()
-        uses: ./.github/workflows/notificacion-teams.yml
+        uses: ./.github/workflows/notificacion_teams.yml
         with:
           title: "💥 Workflow ${{ github.workflow }}  Fallido"
           message: "Workflow con errores - Revisar logs ${{ github.repository }} hora: ${{steps.fecha.outputs.date}}"
