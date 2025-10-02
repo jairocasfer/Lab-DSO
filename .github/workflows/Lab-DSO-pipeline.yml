@@ -157,8 +157,8 @@ jobs:
 
 
       - name: Notificar éxito
-        if: always()
-        uses: ./.github/workflows/notificacion_teams.yml
+        if: success()
+        uses: ./.github/actions/notificar-teams
         with:
           title: "🎉 ¡Workflow ${{ github.workflow }} Completado!"
           message: "Repositorio: ${{ github.repository }} - Iniciado por:${{ github.actor }} fue completado en la hora: ${{steps.fecha.outputs.date}}"
@@ -167,7 +167,7 @@ jobs:
 
       - name: Notificar fallo
         if: failure()
-        uses: ./.github/workflows/notificacion_teams.yml
+        uses: ./.github/actions/notificar-teams
         with:
           title: "💥 Workflow ${{ github.workflow }}  Fallido"
           message: "Workflow con errores - Revisar logs ${{ github.repository }} hora: ${{steps.fecha.outputs.date}}"
