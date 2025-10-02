@@ -3,22 +3,17 @@ description: "Envía notificaciones a Microsoft Teams con AdaptiveCards"
 
 inputs:
   title:
-    description: "Título del mensaje"
     required: true
   message:
-    description: "Mensaje a mostrar"
     required: true
   state:
-    description: "Estado final (SUCCESS/FAILED/CANCELLED)"
     required: true
   color:
-    description: "Color de estado (Good/Attention/Warning)"
-    required: true
+    required: false
+    default: "Default"
   action_title:
-    description: "Texto del botón de acción"
     required: true
   webhook_url:
-    description: "URL del Canal de Teams"
     required: true
 
 runs:
@@ -26,21 +21,21 @@ runs:
   steps:
     - shell: bash
       run: |
-        # Copiar la plantilla
-        cp .github/templates/payload.json payload.json
+        # Variables de entorno a sustituir en el template
+        export TITLE="${{ inputs.title }}"
+        export MESSAGE="${{ inputs.message }}"
+        export STATE="${{ inputs.state }}"
+        export COLOR="${{ inputs.color }}"
+        export ACTION_TITLE="${{ inputs.action_title }}"
+        export REPO="${{ github.repository }}"
+        export REF="${{ github.ref_name }}"
+        export SERVER_URL="${{ github.server_url }}"
+        export RUN_ID="${{ github.run_id }}"
 
-        # Reemplazar los placeholders con sed
-        sed -i "s|\${{ inputs.title }}|${{ inputs.title }}|g" payload.json
-        sed -i "s|\${{ inputs.message }}|${{ inputs.message }}|g" payload.json
-        sed -i "s|\${{ inputs.state }}|${{ inputs.state }}|g" payload.json
-        sed -i "s|\${{ inputs.color }}|${{ inputs.color }}|g" payload.json
-        sed -i "s|\${{ inputs.action_title }}|${{ inputs.action_title }}|g" payload.json
-        sed -i "s|\${{ github.repository }}|${{ github.repository }}|g" payload.json
-        sed -i "s|\${{ github.ref_name }}|${{ github.ref_name }}|g" payload.json
-        sed -i "s|\${{ github.server_url }}|${{ github.server_url }}|g" payload.json
-        sed -i "s|\${{ github.run_id }}|${{ github.run_id }}|g" payload.json
+        # Crear payload final desde la plantilla
+        envsubst < .github/templates/payload.json > payload_final.json
 
         # Enviar a Teams
         curl -X POST -H "Content-Type: application/json" \
-          -d @payload.json \
+          -d @payload_final.json \
           "${{ inputs.webhook_url }}"

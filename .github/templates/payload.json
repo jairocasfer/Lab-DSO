@@ -9,30 +9,30 @@
         "body": [
           {
             "type": "TextBlock",
-            "text": "${{ inputs.title }}",
+            "text": "$TITLE",
             "weight": "Bolder",
             "size": "Large",
-            "color": "${{ inputs.color }}"
+            "color": "$COLOR"
           },
           {
             "type": "TextBlock",
-            "text": "${{ inputs.message }}",
+            "text": "$MESSAGE",
             "wrap": true
           },
           {
             "type": "FactSet",
             "facts": [
-              {"title": "Estado final:", "value": "${{ inputs.state }}"},
-              {"title": "Repositorio:", "value": "${{ github.repository }}"},
-              {"title": "Rama:", "value": "${{ github.ref_name }}"}
+              { "title": "Estado final:", "value": "$STATE" },
+              { "title": "Repositorio:", "value": "$REPO" },
+              { "title": "Rama:", "value": "$REF" }
             ]
           }
         ],
         "actions": [
           {
             "type": "Action.OpenUrl",
-            "title": "${{ inputs.action_title }}",
-            "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            "title": "$ACTION_TITLE",
+            "url": "$SERVER_URL/$REPO/actions/runs/$RUN_ID"
           }
         ]
       }
