@@ -16,6 +16,10 @@ inputs:
   action_title:
     description: "Texto del botón de acción"
     required: true
+  webhook_url: 
+    description: "URL del Canal de Teams"
+    required: true
+  
 runs:
   using: "composite"
   steps:
