@@ -1,0 +1,75 @@
+name: Notificar a canal de Teams
+
+on:
+  workflow_call:
+    inputs:
+      title:
+        required: true
+        type: string
+      message:
+        required: true
+        type: string
+      state:
+        required: true
+        type: string
+      color:
+        required: true
+        type: string
+      action_title:
+        required: true
+        type: string
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar notificación a Teams
+        run: |
+          PAYLOAD=$( cat <<EOF
+          {
+            "attachments": [
+              {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                  "\$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "type": "AdaptiveCard",
+                  "version": "1.4",
+                  "body": [
+                    {
+                      "type": "TextBlock",
+                      "text": "${{ inputs.title }}",
+                      "weight": "Bolder",
+                      "size": "Large",
+                      "color": "${{ inputs.color }}"
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "${{ inputs.message }}",
+                      "wrap": true
+                    },
+                    {
+                      "type": "FactSet",
+                      "facts": [
+                        {"title": "Estado final:", "value": "${{ inputs.state }}"},
+                        {"title": "Repositorio:", "value": "${{ github.repository }}"},
+                        {"title": "Rama:", "value": "${{ github.ref_name }}"}
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": "Action.OpenUrl",
+                      "title": "${{ inputs.action_title }}",
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+
+          EOF
+          )
+          curl -X POST -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "${{ secrets.TEAMS_WEBHOOK_URL }}"
